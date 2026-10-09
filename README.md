@@ -34,7 +34,7 @@ npm run preview
 
 - Edit the birthday text and confession in `src/main.jsx`.
 - Change colors, layout, and animations in `src/styles.css`.
-- The optional music toggle is only a visual placeholder right now; no audio file is bundled. To add music, use a track you have permission to share and wire it to an `Audio` element after a user click.
+- Wonderwall playback is wired to `/wonderwall.mp3`. To enable it, add your permitted-to-share audio file at `public/wonderwall.mp3` (create the `public` folder if needed). The welcome button attempts to start the song when she opens the surprise; the top-right control can pause or resume it. Browsers may block playback if it is not triggered by a user gesture.
 - Add your own photos or shared memories if you want to make it more personal. Avoid putting private photos or details in a public repository unless you're comfortable with anyone being able to access them.
 
 ## Deploy to Vercel
