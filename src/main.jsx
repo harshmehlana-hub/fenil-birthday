@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import confetti from 'canvas-confetti';
 import { Heart, Sparkles, Gift, Music2, Volume2, VolumeX, ArrowRight, Star, Cake, Mail, RotateCcw, PartyPopper, Flower2, ChevronDown } from 'lucide-react';
@@ -17,6 +17,27 @@ function App() {
   const [musicOn, setMusicOn] = useState(false);
   const [revealed, setRevealed] = useState([]);
   const [showNote, setShowNote] = useState(false);
+  const audioRef = useRef(null);
+
+  const startMusic = async () => {
+    if (!audioRef.current) return;
+    try {
+      await audioRef.current.play();
+      setMusicOn(true);
+    } catch (error) {
+      setMusicOn(false);
+    }
+  };
+
+  const toggleMusic = async () => {
+    if (!audioRef.current) return;
+    if (audioRef.current.paused) {
+      await startMusic();
+    } else {
+      audioRef.current.pause();
+      setMusicOn(false);
+    }
+  };
 
   useEffect(() => {
     document.title = stage === 'letter' ? 'One last little thing ♡' : 'For Fenil ♡';
@@ -48,6 +69,7 @@ function App() {
 
   return (
     <main className="app-shell">
+      <audio ref={audioRef} src="/wonderwall.mp3" loop preload="none" onPlay={() => setMusicOn(true)} onPause={() => setMusicOn(false)} />
       <div className="ambient ambient-one" />
       <div className="ambient ambient-two" />
       <div className="float-layer" aria-hidden="true">
@@ -56,8 +78,8 @@ function App() {
 
       <header className="topbar">
         <button className="brand" onClick={() => go('welcome')} aria-label="Back to beginning"><span className="brand-heart">♡</span> a little thing for you</button>
-        <button className="sound-toggle" onClick={() => setMusicOn(!musicOn)} aria-label="Toggle music note" title="Music is a little idea for now">
-          {musicOn ? <Volume2 size={17} /> : <VolumeX size={17} />} <span>{musicOn ? 'vibes on' : 'sound off'}</span>
+        <button className="sound-toggle" onClick={toggleMusic} aria-label={musicOn ? 'Pause Wonderwall' : 'Play Wonderwall'} title="Play or pause Wonderwall">
+          {musicOn ? <Volume2 size={17} /> : <Music2 size={17} />} <span>{musicOn ? 'playing' : 'play song ♡'}</span>
         </button>
       </header>
 
@@ -72,7 +94,7 @@ function App() {
         <p className="tiny-overline">HEY, MY KITKAT 🍫</p>
         <h1>Someone made<br />you a <em>little something.</em></h1>
         <p className="hero-copy">It's full of tiny surprises, a little bit of chaos, and a whole lot of love. Basically, very you.</p>
-        <button className="primary-btn" onClick={() => go('gifts')}>Open your surprise <ArrowRight size={17} /></button>
+        <button className="primary-btn" onClick={() => { if (!musicOn) startMusic(); go('gifts'); }}>Open your surprise <ArrowRight size={17} /></button>
         <div className="scroll-hint"><ChevronDown size={15} /> made especially for Fenil</div>
       </section>}
 
